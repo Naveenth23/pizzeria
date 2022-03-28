@@ -168,60 +168,54 @@
         <input type="hidden" name="category" id="category" class="category" value="" />
         <input type="hidden" name="itemName" id="itemName" class="itemName" value="" />
         <input type="hidden" name="ingredient" class="ingredientList" id="ingredientList" value="" />
-        <div class="heading_s1">
-            <h4>Ingredients</h4>
-        </div>
-        <div id="ingredients">
-            <div class="tm-checkout-payment">
-                <div class="tm-form-inner">
-                    <div class="tm-form-field">                        
+        <div class="pizza-items">
+            <div class="heading_s1">
+                <h4>Ingredients</h4>
+            </div>
+            <div id="ingredients">
+                <div class="tm-checkout-payment">
+                    <div class="tm-form-inner">
+                        <div class="tm-form-field">                        
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="table-responsive order_table">
-                <table class="ingredient-table">
-                    <thead>
-                    </thead>
-                </table>
-            </div>
-        </div>
-
-        <% for (let topping of toppings) { %>    
-            <div class="heading_s1">
-                <h4><%= topping.toppingCategoryName %></h4>
-            </div>
-            <div class="topping-items">
                 <div class="table-responsive order_table">
-                    <table class="topping-table">
+                    <table class="ingredient-table">
                         <thead>
-                            <% for(let items of Object.values(topping.topping)) {
-                            %>
-                            <tr>
-                                <th width="80%">
-                                    <input type="checkbox" value="<%= items.toppingName %>,<%= topping.toppingCategoryName %>,<%= items.price %>,1,1" name="topping" class="toppings" id="toppings<%= items.documentId %>">
-                                    <label for="toppings<%= items.documentId %>"><%= items.toppingName %></label>
-                                </th>
-                                <th width="20%">$<%= items.price %></th>
-                            </tr>
-                            <% } %>
                         </thead>
                     </table>
                 </div>
             </div>
-        <%  } %>
-        <div class="form-group col-md-12">
+
+            <% for (let topping of toppings) { %>    
+                <div class="heading_s1">
+                    <h4><%= topping.toppingCategoryName %></h4>
+                </div>
+                <div class="topping-items">
+                    <div class="table-responsive order_table">
+                        <table class="topping-table">
+                            <thead>
+                                <% for(let items of Object.values(topping.topping)) {
+                                %>
+                                <tr>
+                                    <th width="80%">
+                                        <input type="checkbox" value="<%= items.toppingName %>,<%= topping.toppingCategoryName %>,<%= items.price %>,1,1" name="topping" class="toppings" id="toppings<%= items.documentId %>">
+                                        <label for="toppings<%= items.documentId %>"><%= items.toppingName %></label>
+                                    </th>
+                                    <th width="20%">$<%= items.price %></th>
+                                </tr>
+                                <% } %>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            <%  } %>
+        </div>
+        <div style="padding-top:15px; border-top:1px solid #e5e5e5;">
             <button type="button" class="btn btn-default mycart" id="mycart">
                 Add To Cart
             </button>
         </div>
-        <!-- <% for (let topping of toppings) { %>    
-            <div class="form-group col-md-12">
-                <div class="chek-form">
-                        <input class="form-check-input toppings" type="checkbox" value="<%= topping.price %>" name="topping[]" id="createaccount">
-                        <label class="form-check-label label_info" for="createaccount"><span><%= topping.toppingName %></span></label>
-                </div>
-            </div>
-        <%  } %> -->
     </form>
 </div>
 
