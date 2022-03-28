@@ -649,6 +649,42 @@ PAGE JS
 		format: 'mm/dd/yyyy',
         zIndex: 2048,
       });
+
+		$('.advancePicker').datepicker({
+			minDate: 0,
+			maxDate: '+5',
+			/* beforeShowDay: $.datepicker.noWeekends */
+			onSelect: function (dateString, txtDate) {
+				var today = new Date(dateString);
+				var day = today.toLocaleString('en-us', {weekday: 'long'});
+				$('#advance_time').removeClass('hidden-list');
+				if(day=='Friday' || day=='Saturday'){
+					var optionExists1 = ($('#advance_time option[value="21:00"]').length > 0);
+					var optionExists2 = ($('#advance_time option[value="21:30"]').length > 0);
+					if(!optionExists1)
+					{
+						$('#advance_time').append($('<option>').val('21:00').text('09:00 PM'))
+					}
+					if(!optionExists2)
+					{
+						$('#advance_time').append($('<option>').val('21:30').text('09:30 PM'))
+					}
+				}else{
+					var selectobject = document.getElementById("advance_time");
+					for (var i=0; i<selectobject.length; i++) {
+						if (selectobject.options[i].value == '21:00')
+							selectobject.remove(i);
+						if (selectobject.options[i].value == '21:30')
+							selectobject.remove(i);
+					}
+				}
+			},
+			beforeShowDay: function(date) {
+			var show = true;
+			if(date.getDay()==1) show=false
+			return [show];
+			}
+		});
     });
 	
 	/*===================================*
