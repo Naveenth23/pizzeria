@@ -4985,6 +4985,11 @@ footer .widget_title {
 /*===================================*
   26. START LOGIN REGISTER STYLE
 *===================================*/
+.special-items,.pizza-items {
+    height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
 .lr_popup .modal-body {
 	padding: 0;
 }
