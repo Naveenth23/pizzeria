@@ -37,6 +37,7 @@ router.post('/update-note', cartController.updateNote);
 router.post('/cart-delete-item', cartController.removeFromCart);
 router.get('/getnote/:id', cartController.getNote);
 router.get('/checkout', shopController.getCheckout);
+router.get('/advance', shopController.getAdvance);
 router.get('/checkout/success', shopController.getCheckoutSuccess);
 router.get('/checkout/cancel', shopController.getAllItems);
 router.get('/order/confirm', shopController.orderConfirm);

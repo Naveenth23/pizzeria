@@ -435,6 +435,56 @@ const getCheckout = async(req, res, next) => {
     res.render('shop/checkout', { delivery: delivery, discountPrice:discountPrice,pageTitle: 'Byford Pizzeria Online Checkout', path: '/cart', name: 'Edward' })
 };
 
+const getAdvance = async(req, res, next) => {
+    if(!req.session.cart) {
+        return res.redirect('/menu');
+    }else if(req.session.cart && Object.values(req.session.cart.items) ==0){
+        return res.redirect('/menu');
+    }
+    const { cart } = req.session;
+    let totalAmount = 0;
+    for(let productId of Object.values(req.session.cart.items)) {
+        if(productId.type === 'deals'){
+            totalAmount = totalAmount + (productId.item.price * productId.qty);
+            if(productId.item.deals.length >0){
+                for(let items1 of Object.values(productId.item.deals)) {
+                    let extraTopping = JSON.parse(items1).extraTopping ? JSON.parse(items1).extraTopping : [];
+
+                    if(extraTopping.length >0){
+                        for(let t of extraTopping) {
+                            let test1 = t.split(',');
+                            totalAmount +=parseFloat(test1[2]);
+                        }
+                    }						
+                }
+            }	
+        }
+        
+        if(productId.type === 'other'){
+            if (productId.item.toppings.length > 0) {				
+                let extraTopping = JSON.parse(productId.item.toppings);
+                for(let t of extraTopping) {
+                    let test1 = t.split(',');
+                    totalAmount +=parseFloat(test1[2]);
+                }
+            }
+            totalAmount = totalAmount + (productId.item.price * productId.qty);
+        }
+    }
+
+    const snapshot = await firebase.firestore().collection('discount').get()
+    let documents;
+    snapshot.forEach(doc => {
+        documents = doc.data();
+        discount = documents.discountinpercentage;
+    });
+
+    let discountPrice = 0;
+    let discountType = '';
+       
+    res.render('shop/advance', { delivery: delivery, discountPrice:discountPrice,pageTitle: 'Byford Pizzeria Online Checkout', path: '/cart', name: 'Edward' })
+};
+
 const orderConfirm = async(req, res, next) => {
     
     const transporter = nodemailer.createTransport({
@@ -860,6 +910,7 @@ module.exports = {
   addNote,
   getCart,
   getIndex,
+  getAdvance,
   getCheckout,
   getCheckoutSuccess,
   orderConfirm,
