@@ -1,0 +1,30 @@
+[
+    { 
+        "category": "SPECIAL DEALS",
+        "slug":"SPECIAL DEALS"
+    },
+    {
+        "category":"STONE BAKED PIZZAS",
+        "slug":"STONE BAKED PIZZAS"
+    },
+    {
+        "category":"PASTA",
+        "slug":"PASTA"
+    },
+    {
+        "category":"SIDES",
+        "slug":"SIDES"
+    },
+    {
+        "category":"KIDS MENU",
+        "slug":"KIDS MENU"
+    },
+    {
+        "category":"DRINKS",
+        "slug":"DRINKS"
+    },
+    {
+        "category":"DESSERTS",
+        "slug":"DESSERTS"
+    }
+]
