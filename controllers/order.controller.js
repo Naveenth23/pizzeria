@@ -165,7 +165,7 @@ function orderController(){
 		async store(req, res) {
 			let userEntity = {};
 			// Validate request
-			const {name, mobileNumber, email, address,city,postcode,ordertype,pickupType,shippingCharge } = req.body;
+			const {name, mobileNumber, email, address,city,postcode,ordertype,pickupType,shippingCharge,advance_order,advance_date,advance_time } = req.body;
 			let order_type = '';
 			let { cart } = req.session;
 			if(ordertype === 'pickup'){
@@ -180,17 +180,6 @@ function orderController(){
 				return res.redirect('/checkout')
 			}
 
-			// const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{10}$/;
-			// const validPhone = phoneRegex.exec(mobileNumber);
-			// // Valid Phonenumber
-			// if(!validPhone){
-			// 	req.flash('error', 'Phone Number is not valid');
-			// 	req.flash('name', name);
-			// 	req.flash('mobileNumber', mobileNumber);
-			// 	req.flash('address', address);
-			// 	req.flash('email', email);
-			// 	return res.redirect('/checkout');
-			// }
 			const data = req.body;
 				let count = 0;		
 			for (let productId in req.session.cart.items) {
@@ -236,6 +225,26 @@ function orderController(){
 					}
 				}
 			try {
+				let status = 'PENDING';
+				var dateObj = new Date();
+				var month = dateObj.getUTCMonth() + 1; //months from 1-12
+				var day = dateObj.getUTCDate();
+				var year = dateObj.getUTCFullYear();
+				let deliveryTiming = year+"-"+month+"-"+day+" "+dateObj.getUTCHours()+":"+dateObj.getUTCMinutes()+":"+dateObj.getUTCSeconds()+"."+Math.floor(100000 + Math.random() * 900000);
+				if(advance_order==true){
+					req.session.advance_order = advance_order;
+					req.session.advance_date = advance_date;
+					req.session.advance_time = advance_time;
+					
+					status = 'ADVANCE PENDING';
+					let timestamp = Date.parse(advance_date);
+					
+					let dateObject = new Date(timestamp); 
+					month = dateObject.getUTCMonth() + 1; //months from 1-12
+					day = dateObject.getUTCDate()+1;
+					year = dateObject.getUTCFullYear();
+					deliveryTiming = year+"-"+month+"-"+day+" "+advance_time+":00"+"."+Math.floor(100000 + Math.random() * 900000);
+				}
 				if(ordertype ==='delivery'){
 					if(!city || !postcode) {
 						req.flash('error', 'All fields are required.');
@@ -298,17 +307,11 @@ function orderController(){
 					});
 					const pieces = ordrNo.split(/[\s-]+/)
 					const last = pieces[pieces.length - 1]
-					let increasedNum = Number(last) + 1;
-					var dateObj = new Date();
-					var month = dateObj.getUTCMonth() + 1; //months from 1-12
-					var day = dateObj.getUTCDate();
-					var year = dateObj.getUTCFullYear();				
+					let increasedNum = Number(last) + 1;			
 					var dt = new Date();
 					newdate = dt.getFullYear() + '' + (((dt.getMonth() + 1) < 10) ? '0' : '') + (dt.getMonth() + 1) + '' + ((dt.getDate() < 10) ? '0' : '') + dt.getDate();
 					const orderNumber = "O-"+newdate+"-0"+increasedNum;
 					var orderDocRef = firestore.collection('orders').doc();	
-					var deliveryTiming = year+"-"+month+"-"+day+" "+dateObj.getUTCHours()+":"+dateObj.getUTCMinutes()+":"+dateObj.getUTCSeconds()+"."+Math.floor(100000 + Math.random() * 900000);		
-					
 					orderDocRef.set({
 						collected: 'No',            
 						count: count.toString(),
@@ -330,7 +333,7 @@ function orderController(){
 						orderNumber: orderNumber,
 						orderType: req.session.order.orderType,
 						paidType:'PAY AT COUNTER',
-						status: 'PENDING',
+						status: status,
 						tableNumber:''
 					})
 					

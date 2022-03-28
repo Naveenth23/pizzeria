@@ -527,6 +527,24 @@ const testStripe = async(req,res,next)=>{
 const getCheckoutSuccess = async(req, res, next) => {
     try {
         const {name, mobileNumber, email, address,ordertype } = req.body;
+        const advance_order = req.session.advance_order;
+        let status = 'PAID';
+        var dateObj = new Date();
+        var month = dateObj.getUTCMonth() + 1; //months from 1-12
+        var day = dateObj.getUTCDate();
+        var year = dateObj.getUTCFullYear();
+        var deliveryTiming = year+"-"+month+"-"+day+" "+dateObj.getUTCHours()+":"+dateObj.getUTCMinutes()+":"+dateObj.getUTCSeconds()+"."+Math.floor(100000 + Math.random() * 900000);
+        if(advance_order){
+            status = 'ADVANCE PENDING';
+            const advance_date = req.session.advance_date;
+            const advance_time = req.session.advance_time;
+            let timestamp = Date.parse(advance_date);
+            let dateObject = new Date(timestamp); 
+            month = dateObject.getUTCMonth() + 1; //months from 1-12
+            day = dateObject.getUTCDate()+1;
+            year = dateObject.getUTCFullYear();
+            deliveryTiming = year+"-"+month+"-"+day+" "+advance_time+":00"+"."+Math.floor(100000 + Math.random() * 900000);
+        }
         let userDocRef = firestore.collection('users').doc();
         req.session.user_id = userDocRef.id
 
@@ -558,11 +576,6 @@ const getCheckoutSuccess = async(req, res, next) => {
         const pieces = ordrNo.split(/[\s-]+/)
 			const last = pieces[pieces.length - 1]
 			let increasedNum = Number(last) + 1;
-			var dateObj = new Date();
-			var month = dateObj.getUTCMonth() + 1; //months from 1-12
-			var day = dateObj.getUTCDate();
-			var year = dateObj.getUTCFullYear();
-			
 			var dt = new Date();
             newdate = dt.getFullYear() + '' + (((dt.getMonth() + 1) < 10) ? '0' : '') + (dt.getMonth() + 1) + '' + ((dt.getDate() < 10) ? '0' : '') + dt.getDate();
             const orderNumber = "O-"+newdate+"-0"+increasedNum;
@@ -637,7 +650,6 @@ const getCheckoutSuccess = async(req, res, next) => {
                 order_type = 'DELIVERY';
             }
 
-            var deliveryTiming = year+"-"+month+"-"+day+" "+dateObj.getUTCHours()+":"+dateObj.getUTCMinutes()+":"+dateObj.getUTCSeconds()+"."+Math.floor(100000 + Math.random() * 900000);
         orderDocRef.set({
             collected: 'No',            
             count: count,
